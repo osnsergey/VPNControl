@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0ADE1773-3A7E-4B5B-9ABB-2BEE8DC4303D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VPNControl</RootNamespace>
+    <AssemblyName>VPNControl</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FileReader.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IniFileCs.cs" />
+    <Compile Include="OneTimePassword.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_open.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_closed.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress5.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress4.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress20.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress6.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress7.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress8.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress9.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress10.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress11.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress12.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress13.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress14.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress15.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress17.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress18.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vpn_progress19.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
