@@ -54,8 +54,11 @@
     </Compile>
     <Compile Include="IniFileCs.cs" />
     <Compile Include="OneTimePassword.cs" />
+    <Compile Include="ProcessExecutor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateMonitor.cs" />
+    <Compile Include="StatusListener.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>

@@ -9,7 +9,7 @@ using System.IO;
 
 namespace VPNControl
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, StatusListener
     {
         private bool vpn_open = false;
         private IniFile ini_file_;
@@ -19,13 +19,34 @@ namespace VPNControl
         private const int iconsCount = 20;
         private Icon[] icons = new Icon[iconsCount];
         private int currentIcon = 0;
-        private bool inProgress = false;
+        private volatile bool inProgress = false;
         private OneTimePassword otp;
+
+        private StateMonitor smon;
         
         public MainForm()
         {
             InitializeComponent();
-            ini_file_ = new IniFile();            
+            ini_file_ = new IniFile();
+            ini_file_.Load("VPNControl.ini");
+
+            int checkTimeout;
+            smon = Int32.TryParse(ini_file_.GetKeyValue("Options", "checkTimeout"), out checkTimeout) ? 
+                new StateMonitor(this, checkTimeout) : new StateMonitor(this);
+
+            smon.Start();
+        }
+
+        public void OnConnected()
+        {
+            if (!inProgress && notifyIcon1.Icon != Properties.Resources.vpn_open) 
+                notifyIcon1.Icon = Properties.Resources.vpn_open;
+        }
+
+        public void OnDisconnected()
+        {
+            if (!inProgress && notifyIcon1.Icon != Properties.Resources.vpn_closed)
+                notifyIcon1.Icon = Properties.Resources.vpn_closed;
         }
 
         static private System.Diagnostics.ProcessStartInfo build_startinfo(string module, string arguments)
@@ -55,6 +76,7 @@ namespace VPNControl
 
             //Start process
             inProgress = true;
+            smon.Suspend();
             process.Start();
 
             if (!vpn_open)
@@ -89,6 +111,8 @@ namespace VPNControl
                 notifyIcon1.Icon = Properties.Resources.vpn_closed;
                 vpn_open = false;
             }
+
+            smon.Resume();
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -136,8 +160,6 @@ namespace VPNControl
             icons[18] = Properties.Resources.vpn_progress19;
             icons[19] = Properties.Resources.vpn_progress20;
 
-            ini_file_.Load("VPNControl.ini");
-
             IniFile.IniSection sectOptions = ini_file_.GetSection("Options");
 
             foreach (IniFile.IniSection.IniKey k in sectOptions.Keys)
@@ -163,6 +185,11 @@ namespace VPNControl
             currentIcon++;
             if (currentIcon == iconsCount)
                 currentIcon = 0;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            smon.StopTread();
         }
     }
 }
