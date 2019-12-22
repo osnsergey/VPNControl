@@ -11,10 +11,11 @@ namespace VPNControl
 {
     public partial class MainForm : Form, StatusListener
     {
-        private bool vpn_open = false;
+        private volatile bool vpn_open = false;
         private IniFile ini_file_;
         private string password;
         private string default_server;
+        private string current_server;
 
         private const int iconsCount = 20;
         private Icon[] icons = new Icon[iconsCount];
@@ -39,14 +40,31 @@ namespace VPNControl
 
         public void OnConnected()
         {
-            if (!inProgress && notifyIcon1.Icon != Properties.Resources.vpn_open) 
+            if (inProgress) return;
+
+            if (notifyIcon1.Icon != Properties.Resources.vpn_open) 
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
         }
 
         public void OnDisconnected()
         {
-            if (!inProgress && notifyIcon1.Icon != Properties.Resources.vpn_closed)
+            if (inProgress) return;
+
+            if (!vpn_open)
+            {
+                smon.Pause();
+                return;
+            }
+            
+            vpn_open = false;
+
+            if (notifyIcon1.Icon != Properties.Resources.vpn_closed)
                 notifyIcon1.Icon = Properties.Resources.vpn_closed;
+
+            if(bool.Parse(ini_file_.GetKeyValue("Options", "autoReconnect")))
+            {
+                exec_vpn(current_server);
+            }
         }
 
         static private System.Diagnostics.ProcessStartInfo build_startinfo(string module, string arguments)
@@ -70,13 +88,14 @@ namespace VPNControl
             process.EnableRaisingEvents = true;
             process.Exited += new EventHandler(myProcess_Exited);
 
+            inProgress = true;
+            smon.Pause();
+
             //Start progress icons
             currentIcon = 0;
             timer1.Start();
 
             //Start process
-            inProgress = true;
-            smon.Suspend();
             process.Start();
 
             if (!vpn_open)
@@ -104,15 +123,15 @@ namespace VPNControl
                 //Set icon to 'Connected' state
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
                 vpn_open = true;
+                smon.Unpause();
             }
             else
             {
                 //Set icon to 'Initial/Disconnected' state
                 notifyIcon1.Icon = Properties.Resources.vpn_closed;
                 vpn_open = false;
+                smon.Pause();
             }
-
-            smon.Resume();
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -120,6 +139,7 @@ namespace VPNControl
             if (inProgress) return;
             if (e.Button != MouseButtons.Left) return;
 
+            current_server = default_server;
             exec_vpn(default_server);
         }
 
@@ -134,6 +154,7 @@ namespace VPNControl
             if (inProgress) return;
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
 
+            current_server = menuItem.Text;
             exec_vpn(menuItem.Text);
         }
 
@@ -189,7 +210,7 @@ namespace VPNControl
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            smon.StopTread();
+            smon.Stop();
         }
     }
 }

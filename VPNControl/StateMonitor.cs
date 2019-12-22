@@ -9,9 +9,9 @@ namespace VPNControl
     class StateMonitor
     {
         private Thread thread_;
-        private volatile bool terminated_ = false;
         private StatusListener listener_;
         private int check_timeout_ = 60000;
+        private volatile bool paused_ = false;
 
         public StateMonitor(StatusListener listener)
         {
@@ -34,26 +34,26 @@ namespace VPNControl
         // Override in base class
         public void RunThread()
         {
-            while (!terminated_)
+            while (true)
             {
-                CheckStatus();
+                if(!paused_) CheckStatus();
                 Thread.Sleep(check_timeout_);
             }
         }
 
-        public void StopTread()
+        public void Stop()
         {
-            terminated_ = true;
+            thread_.Abort();
         }
 
-        public void Suspend()
+        public void Pause()
         {
-            thread_.Suspend();
+            paused_ = true;
         }
 
-        public void Resume()
+        public void Unpause()
         {
-            thread_.Resume();
+            paused_ = false;
         }
 
         private void CheckStatus()
