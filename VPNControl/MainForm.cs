@@ -93,7 +93,11 @@ namespace VPNControl
 
             //Start progress icons
             currentIcon = 0;
-            timer1.Start();
+            //Start timer in main thread
+            this.Invoke(new MethodInvoker(delegate()
+            {
+                timer1.Start();
+            }));
 
             //Start process
             process.Start();
@@ -116,7 +120,11 @@ namespace VPNControl
             System.Diagnostics.Process.Start(build_startinfo("ipconfig.exe", "/renew"));
 
             inProgress = false;
-            timer1.Stop();
+            //Stop timer in main thread
+            this.Invoke(new MethodInvoker(delegate()
+            {
+                timer1.Stop();
+            }));
 
             if (vpn_open == false)
             {
