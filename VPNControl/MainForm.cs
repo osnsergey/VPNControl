@@ -14,6 +14,7 @@ namespace VPNControl
         private volatile bool vpn_open = false;
         private IniFile ini_file_;
         private string password;
+        private string username;
         private string default_server;
         private string current_server;
 
@@ -106,7 +107,7 @@ namespace VPNControl
             {
                 process.StandardInput.WriteLine("connect " + vpnserver);
                 process.StandardInput.WriteLine("0");
-                process.StandardInput.WriteLine();
+                process.StandardInput.WriteLine(username != null && username.Length != 0 ? username : "");
                 process.StandardInput.WriteLine(password);
                 process.StandardInput.WriteLine(otp.GetCode().ToString("000000"));
                 process.StandardInput.WriteLine();
@@ -203,6 +204,7 @@ namespace VPNControl
             }
 
             password = ini_file_.GetKeyValue("Options", "password");
+            username = ini_file_.GetKeyValue("Options", "username");
             default_server = ini_file_.GetKeyValue("Options", "default");
             otp = new OneTimePassword(ini_file_.GetKeyValue("Options", "secret"));
         }
