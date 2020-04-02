@@ -27,6 +27,19 @@ namespace VPNControl
 
         private StateMonitor smon;
         
+        private static String[] SplitServerName(String srvName)
+        {
+            List<String> result = new List<String>();
+
+            String[] splitValue = srvName.Split(new Char[] { '/' });
+            
+            foreach (String element in splitValue) result.Add(element);
+
+            if (splitValue.Length == 1) result.Add("0");
+
+            return result.ToArray();
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -106,8 +119,10 @@ namespace VPNControl
 
             if (!vpn_open)
             {
-                process.StandardInput.WriteLine("connect " + vpnserver);
-                process.StandardInput.WriteLine("0");
+                String[] srvName = SplitServerName(vpnserver);
+
+                process.StandardInput.WriteLine("connect " + srvName[0]);
+                process.StandardInput.WriteLine(srvName[1]););
                 process.StandardInput.WriteLine(username != null && username.Length != 0 ? username : "");
                 process.StandardInput.WriteLine(password);
                 process.StandardInput.WriteLine(otp.GetCode().ToString("000000"));
@@ -167,7 +182,7 @@ namespace VPNControl
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
 
             current_server = menuItem.Text;
-            exec_vpn(menuItem.Text);
+            exec_vpn(current_server);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
