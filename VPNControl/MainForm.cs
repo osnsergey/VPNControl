@@ -17,6 +17,7 @@ namespace VPNControl
         private string username;
         private string default_server;
         private string current_server;
+        private string default_tooltip = "Disconnected";
 
         private const int iconsCount = 20;
         private Icon[] icons = new Icon[iconsCount];
@@ -43,9 +44,9 @@ namespace VPNControl
         {
             if (inProgress) return;
 
-            if (notifyIcon1.Icon != Properties.Resources.vpn_open) 
+            if (notifyIcon1.Icon != Properties.Resources.vpn_open)
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
-        }
+            }
 
         public void OnDisconnected()
         {
@@ -131,6 +132,7 @@ namespace VPNControl
             {
                 //Set icon to 'Connected' state
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
+                notifyIcon1.Text = current_server;
                 vpn_open = true;
                 smon.Unpause();
             }
@@ -138,6 +140,7 @@ namespace VPNControl
             {
                 //Set icon to 'Initial/Disconnected' state
                 notifyIcon1.Icon = Properties.Resources.vpn_closed;
+                notifyIcon1.Text = default_tooltip;
                 vpn_open = false;
                 smon.Pause();
             }
@@ -207,6 +210,7 @@ namespace VPNControl
             username = ini_file_.GetKeyValue("Options", "username");
             default_server = ini_file_.GetKeyValue("Options", "default");
             otp = new OneTimePassword(ini_file_.GetKeyValue("Options", "secret"));
+            notifyIcon1.Text = default_tooltip;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
