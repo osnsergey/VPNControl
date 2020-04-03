@@ -18,6 +18,8 @@ namespace VPNControl
         private string default_server;
         private string current_server;
         private string default_tooltip = "Disconnected";
+        private string connecting_tooltip = "Connecting to ";
+        private bool switch_server = false;
 
         private const int iconsCount = 20;
         private Icon[] icons = new Icon[iconsCount];
@@ -120,6 +122,7 @@ namespace VPNControl
             if (!vpn_open)
             {
                 String[] srvName = SplitServerName(vpnserver);
+                notifyIcon1.Text = connecting_tooltip + vpnserver;
 
                 process.StandardInput.WriteLine("connect " + srvName[0]);
                 process.StandardInput.WriteLine(srvName[1]);
@@ -158,6 +161,11 @@ namespace VPNControl
                 notifyIcon1.Text = default_tooltip;
                 vpn_open = false;
                 smon.Pause();
+                if (switch_server)
+                {
+                    switch_server = false;
+                    exec_vpn(current_server);
+                }
             }
         }
 
@@ -166,6 +174,7 @@ namespace VPNControl
             if (inProgress) return;
             if (e.Button != MouseButtons.Left) return;
 
+            switch_server = false;// current_server != default_server;
             current_server = default_server;
             exec_vpn(default_server);
         }
@@ -181,6 +190,7 @@ namespace VPNControl
             if (inProgress) return;
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
 
+            switch_server = current_server != menuItem.Text;
             current_server = menuItem.Text;
             exec_vpn(current_server);
         }
