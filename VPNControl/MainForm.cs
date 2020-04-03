@@ -122,7 +122,7 @@ namespace VPNControl
                 String[] srvName = SplitServerName(vpnserver);
 
                 process.StandardInput.WriteLine("connect " + srvName[0]);
-                process.StandardInput.WriteLine(srvName[1]););
+                process.StandardInput.WriteLine(srvName[1]);
                 process.StandardInput.WriteLine(username != null && username.Length != 0 ? username : "");
                 process.StandardInput.WriteLine(password);
                 process.StandardInput.WriteLine(otp.GetCode().ToString("000000"));
