@@ -122,7 +122,8 @@ namespace VPNControl
             if (!vpn_open)
             {
                 String[] srvName = SplitServerName(vpnserver);
-                notifyIcon1.Text = connecting_tooltip + vpnserver;
+                String realName = srvName.Length > 2 ? srvName[2] : vpnserver;
+                notifyIcon1.Text = connecting_tooltip + realName;
 
                 process.StandardInput.WriteLine("connect " + srvName[0]);
                 process.StandardInput.WriteLine(srvName[1]);
@@ -150,7 +151,9 @@ namespace VPNControl
             {
                 //Set icon to 'Connected' state
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
-                notifyIcon1.Text = current_server;
+                String[] srvName = SplitServerName(current_server);
+                String realName = srvName.Length > 2 ? srvName[2] : current_server;
+                notifyIcon1.Text = realName;
                 vpn_open = true;
                 smon.Unpause();
             }
@@ -190,8 +193,8 @@ namespace VPNControl
             if (inProgress) return;
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
 
-            switch_server = current_server != menuItem.Text;
-            current_server = menuItem.Text;
+            switch_server = current_server != menuItem.Name;
+            current_server = menuItem.Name;
             exec_vpn(current_server);
         }
 
@@ -224,7 +227,11 @@ namespace VPNControl
             {
                 if (k.Name.StartsWith("server"))
                 {
-                    ToolStripMenuItem item = new ToolStripMenuItem(k.Value);
+                    String[] splitValue = SplitServerName(k.Value);
+
+                    ToolStripMenuItem item = new ToolStripMenuItem(splitValue.Length > 2 ? splitValue[2] : k.Value);
+                    item.Name = k.Value;
+
                     item.Click += item_Click;
 
                     contextMenuStrip1.Items.Insert(0,item);
