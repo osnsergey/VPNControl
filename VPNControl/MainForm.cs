@@ -61,7 +61,7 @@ namespace VPNControl
 
             if (notifyIcon1.Icon != Properties.Resources.vpn_open)
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
-            }
+        }
 
         public void OnDisconnected()
         {
@@ -137,9 +137,6 @@ namespace VPNControl
         // Handle Exited event and display process information.
         private void myProcess_Exited(object sender, System.EventArgs e)
         {
-            System.Threading.Thread.Sleep(5000);
-            System.Diagnostics.Process.Start(build_startinfo("ipconfig.exe", "/renew"));
-
             inProgress = false;
             //Stop timer in main thread
             this.Invoke(new MethodInvoker(delegate()
