@@ -52,6 +52,8 @@ namespace VPNControl
             smon = Int32.TryParse(ini_file_.GetKeyValue("Options", "checkTimeout"), out checkTimeout) ? 
                 new StateMonitor(this, checkTimeout) : new StateMonitor(this);
 
+            Logger.setEnabled(bool.Parse(ini_file_.GetKeyValue("Options", "enableLog")));
+
             smon.Start();
         }
 
@@ -97,13 +99,38 @@ namespace VPNControl
             return startInfo;
         }
 
+        private void Send(System.Diagnostics.Process process, string text)
+        {
+            Logger.log("IN ", text);
+            process.StandardInput.WriteLine(text);
+        }
+
         private void exec_vpn(string vpnserver)
         {
+            Logger.log("exec_vpn begin");
+
             System.Diagnostics.Process process = new System.Diagnostics.Process();
 
             process.StartInfo = build_startinfo("vpncli.exe", !vpn_open ? "-s" : "disconnect");
             process.EnableRaisingEvents = true;
             process.Exited += new EventHandler(myProcess_Exited);
+
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.UseShellExecute = false;
+
+            process.OutputDataReceived += (s, e) =>
+            {
+                if (e.Data != null)
+                    Logger.log("OUT", e.Data);
+            };
+
+            process.ErrorDataReceived += (s, e) =>
+            {
+                if (e.Data != null)
+                    Logger.log("ERR", e.Data);
+            };
 
             inProgress = true;
             smon.Pause();
@@ -117,21 +144,29 @@ namespace VPNControl
             }));
 
             //Start process
+            Logger.log("exec_vpn process.Start");
             process.Start();
+
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
 
             if (!vpn_open)
             {
+                Logger.log("exec_vpn vpn_open = false, sending connect params to vpncli input stream");
+
                 String[] srvName = SplitServerName(vpnserver);
                 String realName = srvName.Length > 2 ? srvName[2] : vpnserver;
                 notifyIcon1.Text = connecting_tooltip + realName;
 
-                process.StandardInput.WriteLine("connect " + srvName[0]);
-                process.StandardInput.WriteLine(srvName[1]);
-                process.StandardInput.WriteLine(username != null && username.Length != 0 ? username : "");
-                process.StandardInput.WriteLine(password);
-                process.StandardInput.WriteLine(otp.GetCode().ToString("000000"));
-                process.StandardInput.WriteLine();
+                Send(process,"connect " + srvName[0]);
+                Send(process,srvName[1]);
+                Send(process,username != null && username.Length != 0 ? username : "");
+                Send(process,password);
+                Send(process,otp.GetCode().ToString("000000"));
+                Send(process,"");
             }
+
+            Logger.log("exec_vpn end");
         }
 
         // Handle Exited event and display process information.
