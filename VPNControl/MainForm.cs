@@ -164,6 +164,8 @@ namespace VPNControl
                 Send(process,password);
                 Send(process,otp.GetCode().ToString("000000"));
                 Send(process,"");
+
+                process.StandardInput.Close();
             }
 
             Logger.log("exec_vpn end");
