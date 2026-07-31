@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Net.NetworkInformation;
 
 namespace VPNControl
 {
@@ -109,6 +110,15 @@ namespace VPNControl
         {
             Logger.log("exec_vpn begin");
 
+            while (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                Logger.log("exec_vpn check network is available");
+
+                System.Threading.Thread.Sleep(2000);
+            }
+
+            Logger.log("exec_vpn network is available, connecting...");
+
             System.Diagnostics.Process process = new System.Diagnostics.Process();
 
             process.StartInfo = build_startinfo("vpncli.exe", !vpn_open ? "-s" : "disconnect");
@@ -176,7 +186,7 @@ namespace VPNControl
         {
             //System.Threading.Thread.Sleep(5000);
             //System.Diagnostics.Process.Start(build_startinfo("ipconfig.exe", "/renew"));
-            System.Threading.Thread.Sleep(10000);
+            //System.Threading.Thread.Sleep(10000);
             inProgress = false;
             //Stop timer in main thread
             this.Invoke(new MethodInvoker(delegate()
