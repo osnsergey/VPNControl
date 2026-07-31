@@ -172,9 +172,9 @@ namespace VPNControl
         // Handle Exited event and display process information.
         private void myProcess_Exited(object sender, System.EventArgs e)
         {
-            System.Threading.Thread.Sleep(5000);
-            System.Diagnostics.Process.Start(build_startinfo("ipconfig.exe", "/renew"));
-            System.Threading.Thread.Sleep(5000);
+            //System.Threading.Thread.Sleep(5000);
+            //System.Diagnostics.Process.Start(build_startinfo("ipconfig.exe", "/renew"));
+            System.Threading.Thread.Sleep(10000);
             inProgress = false;
             //Stop timer in main thread
             this.Invoke(new MethodInvoker(delegate()
