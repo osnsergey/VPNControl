@@ -207,7 +207,7 @@ namespace VPNControl
                 String realName = srvName.Length > 2 ? srvName[2] : current_server;
                 notifyIcon1.Text = realName;
                 vpn_open = true;
-                smon.Unpause();
+                smon.Resume();
             }
             else
             {

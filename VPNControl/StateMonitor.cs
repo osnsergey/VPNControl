@@ -51,7 +51,7 @@ namespace VPNControl
             paused_ = true;
         }
 
-        public void Unpause()
+        public void Resume()
         {
             paused_ = false;
         }
