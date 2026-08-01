@@ -108,13 +108,19 @@ namespace VPNControl
 
         private void exec_vpn(string vpnserver)
         {
-            Logger.log("exec_vpn begin");
+            String[] srvName = SplitServerName(vpnserver);
+            String vpnHost = srvName[0];
 
-            while (!NetworkInterface.GetIsNetworkAvailable())
+            Logger.log("exec_vpn begin, vpn host=" + vpnHost);
+
+            if (!vpn_open) //check only if disconnected
             {
-                Logger.log("exec_vpn check network is available");
-
-                System.Threading.Thread.Sleep(2000);
+                string strError = "";
+                while (!NetworkChecker.IsNetworkReady(vpnHost, 443, out strError))
+                {
+                    Logger.log("exec_vpn check network is available" + (!string.IsNullOrEmpty(strError) ? ", error: " + strError : ""));
+                    System.Threading.Thread.Sleep(4000);
+                }
             }
 
             Logger.log("exec_vpn network is available, connecting...");
@@ -164,11 +170,10 @@ namespace VPNControl
             {
                 Logger.log("exec_vpn vpn_open = false, sending connect params to vpncli input stream");
 
-                String[] srvName = SplitServerName(vpnserver);
                 String realName = srvName.Length > 2 ? srvName[2] : vpnserver;
                 notifyIcon1.Text = connecting_tooltip + realName;
 
-                Send(process,"connect " + srvName[0]);
+                Send(process,"connect " + vpnHost);
                 Send(process,srvName[1]);
                 Send(process,username != null && username.Length != 0 ? username : "");
                 Send(process,password);
