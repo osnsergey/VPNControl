@@ -59,6 +59,8 @@ namespace VPNControl
 
             if (notifyIcon1.Icon != Properties.Resources.vpn_open)
                 notifyIcon1.Icon = Properties.Resources.vpn_open;
+
+            vpn_open = true;
         }
 
         public void OnDisconnected()
